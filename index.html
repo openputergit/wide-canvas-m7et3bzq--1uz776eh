@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkillMart - Online Learning Platform</title>
+    <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Claymorphism theme */
+        :root {
+            --clay-background: #e6eef9;
+            --clay-shadow-light: rgba(255, 255, 255, 0.9);
+            --clay-shadow-dark: rgba(174, 174, 192, 0.4);
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--clay-background);
+        }
+
+        .clay-card {
+            background: var(--clay-background);
+            border-radius: 20px;
+            box-shadow: 8px 8px 16px var(--clay-shadow-dark),
+                        -8px -8px 16px var(--clay-shadow-light);
+            transition: transform 0.2s ease;
+        }
+
+        .clay-card:hover {
+            transform: scale(1.02);
+        }
+
+        .clay-button {
+            background: var(--clay-background);
+            border-radius: 10px;
+            box-shadow: 4px 4px 8px var(--clay-shadow-dark),
+                        -4px -4px 8px var(--clay-shadow-light);
+            transition: all 0.2s ease;
+        }
+
+        .clay-button:active {
+            box-shadow: inset 4px 4px 8px var(--clay-shadow-dark),
+                        inset -4px -4px 8px var(--clay-shadow-light);
+        }
+
+        .loading {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255,255,255,0.8);
+            z-index: 1000;
+        }
+
+        .loader {
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #3498db;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="loading flex items-center justify-center">
+        <div class="loader"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="clay-card sticky top-0 z-50 px-6 py-4 mb-8">
+        <div class="container mx-auto flex justify-between items-center">
+            <div class="text-2xl font-bold text-blue-600">SkillMart</div>
+            <div class="hidden md:flex space-x-6">
+                <a href="#" class="clay-button px-4 py-2">Home</a>
+                <a href="#" class="clay-button px-4 py-2">Courses</a>
+                <a href="#" class="clay-button px-4 py-2">About</a>
+                <a href="#" class="clay-button px-4 py-2">Contact</a>
+            </div>
+            <div class="flex space-x-4">
+                <button id="loginBtn" class="clay-button px-6 py-2">Login</button>
+                <button id="signupBtn" class="clay-button px-6 py-2 bg-blue-500 text-white">Sign Up</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="container mx-auto px-6 py-12">
+        <div class="clay-card p-8 md:p-12 flex flex-col md:flex-row items-center">
+            <div class="md:w-1/2 mb-8 md:mb-0">
+                <h1 class="text-4xl md:text-5xl font-bold mb-6">Learn Without Limits</h1>
+                <p class="text-lg mb-8">Start, switch, or advance your career with thousands of courses from expert instructors.</p>
+                <button class="clay-button px-8 py-3 bg-blue-500 text-white">Explore Courses</button>
+            </div>
+            <div class="md:w-1/2">
+                <img src="https://source.unsplash.com/random/800x600?education" alt="Learning" class="rounded-lg shadow-lg">
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Courses -->
+    <section class="container mx-auto px-6 py-12">
+        <h2 class="text-3xl font-bold mb-8">Featured Courses</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="coursesList">
+            <!-- Courses will be populated here -->
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="container mx-auto px-6 py-12">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="clay-card p-6">
+                <i class="bi bi-book text-4xl text-blue-500 mb-4"></i>
+                <h3 class="text-xl font-bold mb-4">Expert Instructors</h3>
+                <p>Learn from industry experts who share their knowledge and real-world experience.</p>
+            </div>
+            <div class="clay-card p-6">
+                <i class="bi bi-clock text-4xl text-blue-500 mb-4"></i>
+                <h3 class="text-xl font-bold mb-4">Flexible Learning</h3>
+                <p>Learn at your own pace, with lifetime access to courses on desktop and mobile.</p>
+            </div>
+            <div class="clay-card p-6">
+                <i class="bi bi-trophy text-4xl text-blue-500 mb-4"></i>
+                <h3 class="text-xl font-bold mb-4">Certificates</h3>
+                <p>Earn certificates upon completion and showcase your achievements.</p>
+            </div>
+        </div>
+    </section>
+
+    <script type="module">
+        // MongoDB Integration
+        const appSlug = 'skillmart-123456';
+        
+        // Show loading animation
+        function showLoading() {
+            document.querySelector('.loading').style.display = 'flex';
+        }
+
+        function hideLoading() {
+            document.querySelector('.loading').style.display = 'none';
+        }
+
+        // Fetch courses from MongoDB
+        async function fetchCourses() {
+            showLoading();
+            try {
+                const response = await fetch('https://r0c8kgwocscg8gsokogwwsw4.zetaverse.one/mongodb', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': 'Bearer yE7GdGmZDaZgHL7uYJnjj4tYxcP2',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        appSlug: appSlug,
+                        action: 'read',
+                        collection: 'courses'
+                    })
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    displayCourses(data.result);
+                }
+            } catch (error) {
+                console.error('Error fetching courses:', error);
+                // Display sample courses as fallback
+                displaySampleCourses();
+            } finally {
+                hideLoading();
+            }
+        }
+
+        function displaySampleCourses() {
+            const sampleCourses = [
+                {
+                    title: 'Web Development Bootcamp',
+                    instructor: 'John Doe',
+                    price: '$99.99',
+                    rating: 4.8
+                },
+                {
+                    title: 'Machine Learning Basics',
+                    instructor: 'Jane Smith',
+                    price: '$89.99',
+                    rating: 4.7
+                },
+                {
+                    title: 'Digital Marketing Masterclass',
+                    instructor: 'Mike Johnson',
+                    price: '$79.99',
+                    rating: 4.9
+                }
+            ];
+
+            const coursesList = document.getElementById('coursesList');
+            coursesList.innerHTML = sampleCourses.map(course => `
+                <div class="clay-card p-6">
+                    <img src="https://source.unsplash.com/random/400x300?coding" class="w-full h-48 object-cover rounded-lg mb-4" alt="${course.title}">
+                    <h3 class="text-xl font-bold mb-2">${course.title}</h3>
+                    <p class="text-gray-600 mb-2">${course.instructor}</p>
+                    <div class="flex justify-between items-center">
+                        <span class="font-bold text-blue-500">${course.price}</span>
+                        <span class="flex items-center">
+                            <i class="bi bi-star-fill text-yellow-400 mr-1"></i>
+                            ${course.rating}
+                        </span>
+                    </div>
+                    <button class="clay-button w-full mt-4 py-2 bg-blue-500 text-white">Enroll Now</button>
+                </div>
+            `).join('');
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchCourses();
+
+            // Auth buttons
+            document.getElementById('loginBtn').addEventListener('click', () => {
+                alert('Login functionality would be implemented here');
+            });
+
+            document.getElementById('signupBtn').addEventListener('click', () => {
+                alert('Sign up functionality would be implemented here');
+            });
+        });
+    </script>
+<script>document.body.addEventListener('wheel', e => { if (!e.ctrlKey) return; e.preventDefault(); return }, { passive: false })</script>
+	</body>
+</html>
